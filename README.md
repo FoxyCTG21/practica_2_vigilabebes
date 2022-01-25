@@ -16,9 +16,9 @@ ejemplo, una batería para que funcione desconectado de la red, conexión inalá
 cumpla una serie de requisitos:
 • Se requiere tener en una habitación un sistema basado en microcontrolador que, nada más
 arrancar, se quede encendido un led durante un tiempo (para pruebas 5 segundos) y al detectar
-un movimiento accione ese led (luz de compañía) durante otro tiempo (para pruebas 3
+un movimiento accione ese led (LED de compañía) durante otro tiempo (para pruebas 3
 segundos).
-• El led no se encenderá en ningún caso si tenemos una luz ambiente por encima de un
+• El led no se encenderá en ningún caso si tenemos una LED ambiente por encima de un
 determinado umbral que consideremos adecuado.
 • Si detecta movimiento varias veces (3) en menos de 2 minutos, debe accionar un pitido de 3
 segundos en un zumbador que tiene conectado (digamos que tenemos un cable muy largo,
