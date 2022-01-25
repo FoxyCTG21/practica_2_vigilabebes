@@ -8,7 +8,7 @@
 #define PINLEDRGB 5 // pin data 12
 #define NUMPIXELS 1 // numero de leds en la tira
 #define LDR 15
-#define BUZZER 19
+#define PULSADOR 2
 #define RELE 22
 //////////////////////Definicion de variables
 int num_mov = 0;
@@ -21,6 +21,7 @@ byte sensorpir = 21; // pin de salida del sensor, en el Arduino es entrada.
 ////////////////////////////////////
 Adafruit_NeoPixel pixels(NUMPIXELS, PINLEDRGB, NEO_GRB + NEO_KHZ800); // inicializamos el LED PIXEL
 /////////////////////////////////////////////////
+
 boolean check_ldr() // funcion LDR
 {
     int data = 0;
@@ -28,14 +29,14 @@ boolean check_ldr() // funcion LDR
     data = analogRead(LDR); // Leemos el valor de LDR
     Serial.print("LDR: ");
     Serial.println(data);
-    //////////////////////Valor LDR menor de 410
-    if (data <= 410)
+    //////////////////////Valor LDR menor de 80
+    if (data <= 80)
     {
         Serial.print("Es de noche\n");
         return 0;
     }
-    ///////////////////////Valor LDR mayor de 410
-    else if (data > 410)
+    ///////////////////////Valor LDR mayor de 120
+    else if (data >= 120)
     {
         Serial.print("Es de dia\n");
         return 1;
@@ -50,7 +51,7 @@ void pita() ///////// función del buzzer
     ledcWriteTone(0, 0);       // Realiza el pitido
 }
 
-void check_movs() ////////////// Encaso de que se detecte movimiento 3 veces
+void check_movs() ////////////// En caso de que se detecte movimiento 3 veces
 {
     if (num_mov == 3)
     {
@@ -92,11 +93,11 @@ void setup()
 {
     ////////////////////////////////////////////////// declaración de librerias
     ledcSetup(0, 1E5, 12); // Inicializamos el buzzer
-    ledcAttachPin(27, 0);  // Establecemos el pin del buzzer
+    ledcAttachPin(18, 0);  // Establecemos el pin del buzzer
     /////////////////////////////////////////////////// declaración de pines
-    pinMode(LDR, INPUT);
-    pinMode(BUZZER, INPUT);
     pinMode(RELE, OUTPUT);
+    pinMode(LDR, INPUT);
+    pinMode(PULSADOR, INPUT);
     pinMode(sensorpir, INPUT); // declaramos los pines de entrada y salida del sensor
     //////////////////////////////////////////////////// Inicializamiento
     analogReadResolution(10); // Establecemos el rango a 10 bits para que vaya de 0 a 1024
@@ -125,6 +126,7 @@ void loop() ///////////////////////////// INICIO DEL CODIGO
         resettime = resettime + 30; // Cuando llegamos a 0 En el tiempo, cambiamos el reset time y reseteamos movimientos
         num_mov = 0;
     }
+
     ///////////////////////////////////////////////////////////////
     int tiempopitar = resetpito - secstime; // Contaremos para que cada 10 segundos se repita el pitido
     Serial.print("Tiempo reset pito: ");
@@ -136,10 +138,8 @@ void loop() ///////////////////////////// INICIO DEL CODIGO
     //////////////////////////////////////////////////////////////////
     Serial.print("Movimientos: ");
     Serial.println(num_mov);
-    //////////////////////////////////////////////////////////////////
-    boolean umbral = check_ldr();
-    /////////////////////////////////////////////////////////////////
-    if (umbral == 0)
+    ///////////////////////////////////////////////////////////////// En caso de que sea de noche
+    if (check_ldr() == 0)
     {                                       // Si no supera el umbral:
         if (digitalRead(sensorpir) == HIGH) // Si el sensor realiza una lectura
         {
@@ -170,17 +170,24 @@ void loop() ///////////////////////////// INICIO DEL CODIGO
         pita();        // Si pitar está activado, hacemos que pite cada 10 segundos
         num_pitidos++; // Añadimos 1 al contador de activación de relé
     }
-    //////////////////////////////////////////////////////////////////////
-    Serial.println("Buzzer Sin pulsar "); // Si pulsamos el botón reseteamos la variable pitar para que deje de pitar cada 10.
     /////////////////////////////////////////////////////////////////////
-    if (digitalRead(BUZZER) == HIGH)
+    if (digitalRead(PULSADOR) == HIGH)
     {
-        Serial.println("Buzzer pulsado ");
+        Serial.println("PULSADOR pulsado ");
         pitar = 0;
+    }
+    else
+    {
+        Serial.println("PULSADOR Sin pulsar "); // Si pulsamos el botón reseteamos la variable pitar para que deje de pitar cada 10.
     }
     ////////////////////////////////////////////////////////////////////////
     check_rele(); // Comprobamos si hay que activar la manguera (relé).
     Serial.print("Número de pitidos (5 para rele): ");
     Serial.println(num_pitidos);
     delay(500); // Pequeño delay para que descanse el controlador.
+    //////////////////////////////////// Genero lineas vacias para separar la información nueva de la vieja.
+    Serial.println();
+    Serial.println();
+    Serial.println();
+    Serial.println();
 }
