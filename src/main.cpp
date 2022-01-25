@@ -29,13 +29,13 @@ boolean check_ldr() // funcion LDR
     data = analogRead(LDR); // Leemos el valor de LDR
     Serial.print("LDR: ");
     Serial.println(data);
-    //////////////////////Valor LDR menor de 80
+    //////////////////////Valor LDR menor de 410
     if (data <= 80)
     {
         Serial.print("Es de noche\n");
         return 0;
     }
-    ///////////////////////Valor LDR mayor de 120
+    ///////////////////////Valor LDR mayor de 410
     else if (data >= 120)
     {
         Serial.print("Es de dia\n");
@@ -51,7 +51,7 @@ void pita() ///////// función del buzzer
     ledcWriteTone(0, 0);       // Realiza el pitido
 }
 
-void check_movs() ////////////// En caso de que se detecte movimiento 3 veces
+void check_movs() ////////////// Encaso de que se detecte movimiento 3 veces
 {
     if (num_mov == 3)
     {
@@ -138,8 +138,10 @@ void loop() ///////////////////////////// INICIO DEL CODIGO
     //////////////////////////////////////////////////////////////////
     Serial.print("Movimientos: ");
     Serial.println(num_mov);
-    ///////////////////////////////////////////////////////////////// En caso de que sea de noche
-    if (check_ldr() == 0)
+    //////////////////////////////////////////////////////////////////
+    boolean umbral = check_ldr();
+    /////////////////////////////////////////////////////////////////
+    if (umbral == 0)
     {                                       // Si no supera el umbral:
         if (digitalRead(sensorpir) == HIGH) // Si el sensor realiza una lectura
         {
@@ -185,7 +187,6 @@ void loop() ///////////////////////////// INICIO DEL CODIGO
     Serial.print("Número de pitidos (5 para rele): ");
     Serial.println(num_pitidos);
     delay(500); // Pequeño delay para que descanse el controlador.
-    //////////////////////////////////// Genero lineas vacias para separar la información nueva de la vieja.
     Serial.println();
     Serial.println();
     Serial.println();
