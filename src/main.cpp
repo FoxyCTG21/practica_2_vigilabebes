@@ -17,10 +17,10 @@ int resettime = 30; // Periodo de tiempo en el que se resetea la cuenta de movim
 int resetpito = 10;
 boolean pitar = 0;   // Creamos una variable booleana que indica si debe o no pitar cada 10 segundos (apartado 4)
 int num_pitidos = 0; // Numero de pitidos para activar el relé
-
-byte sensorpir = 21;                                                  // pin de salida del sensor, en el Arduino es entrada.
+byte sensorpir = 21; // pin de salida del sensor, en el Arduino es entrada.
+////////////////////////////////////
 Adafruit_NeoPixel pixels(NUMPIXELS, PINLEDRGB, NEO_GRB + NEO_KHZ800); // inicializamos el LED PIXEL
-
+/////////////////////////////////////////////////
 boolean check_ldr() // funcion LDR
 {
     int data = 0;
